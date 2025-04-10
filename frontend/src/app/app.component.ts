@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, Inject, OnInit, Renderer2, } from '@angular/core';
 import { AnimationOptions } from 'ngx-lottie';
 
 @Component({
@@ -10,16 +11,32 @@ import { AnimationOptions } from 'ngx-lottie';
 export class AppComponent implements OnInit {
 
   title = '';
-  loading:boolean = true
-  connected:boolean = false
+  loading: boolean = true
+  connected: boolean = false
+  private document: any
 
-  loaderOptions: AnimationOptions = { path: '/animations/loader.json'};
+  animationOption: AnimationOptions = { path: '/animations/loader.json' };
+
+  constructor(@Inject(DOCUMENT) document: any, private render: Renderer2) {
+    this.document = document
+  }
 
   ngOnInit(): void {
-    setTimeout(() => { 
+    setTimeout(() => {
       this.loading = false
       this.connected = true
     }, 3000)
+  }
+
+  clickToTop(event: any) {
+    const e = event
+    const window = this.document?.defaultView
+    e.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    e.stopImmediatePropagation();
   }
 
 

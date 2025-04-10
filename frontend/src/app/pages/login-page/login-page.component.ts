@@ -8,4 +8,11 @@ import { Component } from '@angular/core';
 })
 export class LoginPageComponent {
 
+  nowYear: number = new Date().getFullYear()
+  showPassword: boolean = false
+
+  setShowPassword() {
+    this.showPassword = !this.showPassword
+  }
+
 }

@@ -8,4 +8,21 @@ import { Component } from '@angular/core';
 })
 export class PasswordPageComponent {
 
+  nowYear: number = new Date().getFullYear()
+  showPasswordCurrent: boolean = false
+  showPassword: boolean = false
+  showPasswordConfirm: boolean = false
+
+  setShowPassword() {
+    this.showPassword = !this.showPassword
+  }
+
+  setShowPasswordConfirm() {
+    this.showPasswordConfirm = !this.showPasswordConfirm
+  }
+
+  setShowPasswordCurrent() {
+    this.showPasswordCurrent = !this.showPasswordCurrent
+  }
+
 }

@@ -8,4 +8,7 @@ import { Component } from '@angular/core';
 })
 export class FooterComponent {
 
+  nowYear: number = new Date().getFullYear()
+  author: string = "Sandy Andryanto"
+
 }
