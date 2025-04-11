@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, OnInit, Renderer2, } from '@angular/core';
+import { Component, Inject, OnInit, Renderer2, HostListener } from '@angular/core';
 import { AnimationOptions } from 'ngx-lottie';
 
 @Component({
@@ -13,6 +13,8 @@ export class AppComponent implements OnInit {
   title = '';
   loading: boolean = true
   connected: boolean = false
+  backTo: boolean = false
+
   private document: any
 
   animationOption: AnimationOptions = { path: '/animations/loader.json' };
@@ -37,6 +39,11 @@ export class AppComponent implements OnInit {
       behavior: 'smooth'
     });
     e.stopImmediatePropagation();
+  }
+
+  @HostListener('window:scroll', ['$event']) // for window scroll events
+  onScroll(event: any) {
+    this.backTo = this.document.body.scrollTop > 50 || this.document.documentElement.scrollTop > 50 ? true : false
   }
 
 

@@ -31,7 +31,7 @@
     <router-outlet />
     <app-newsletter class="mt-auto"></app-newsletter>
     <app-footer></app-footer>
-    <a href="#" (click)="clickToTop($event)" class="btn btn-lg btn-primary back-to-top">
+    <a href="#" (click)="clickToTop($event)" class="btn btn-lg btn-primary back-to-top" [style.display]="backTo ? 'flex' : 'none'">
       <i class="bi bi-chevron-up"></i>
     </a>
   </ng-template>

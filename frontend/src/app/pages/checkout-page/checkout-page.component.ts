@@ -8,4 +8,21 @@ import { Component } from '@angular/core';
 })
 export class CheckoutPageComponent {
 
+  payment:number = -1
+  accept:boolean = false
+
+  setAccept(event:any){
+    const e = event
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    this.accept = e.target.checked
+  }
+
+  setPayment(event:any, index:number){
+    const e = event
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    this.payment = index
+  }
+
 }
