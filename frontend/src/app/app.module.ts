@@ -24,6 +24,7 @@ import { RegisterPageComponent } from './pages/register-page/register-page.compo
 import { ResetPasswordPageComponent } from './pages/reset-password-page/reset-password-page.component';
 import { StorePageComponent } from './pages/store-page/store-page.component';
 import { LottieComponent, provideLottieOptions } from 'ngx-lottie';
+import { SlickCarouselModule } from 'ngx-slick-carousel';
 import player from 'lottie-web';
 
 export function playerFactory() {
@@ -59,6 +60,7 @@ export function playerFactory() {
     BrowserModule,
     AppRoutingModule,
     NgbModule,
+    SlickCarouselModule,
     LottieComponent
   ],
   providers: [
