@@ -9,6 +9,9 @@ import { ForgotPasswordPageComponent } from './pages/forgot-password-page/forgot
 import { ResetPasswordPageComponent } from './pages/reset-password-page/reset-password-page.component'; 
 import { PasswordPageComponent } from './pages/password-page/password-page.component';
 import { ProfilePageComponent } from './pages/profile-page/profile-page.component';
+import { CartPageComponent } from './pages/cart-page/cart-page.component';
+import { CheckoutPageComponent } from './pages/checkout-page/checkout-page.component';
+import { StorePageComponent } from './pages/store-page/store-page.component';
 
 const routes: Routes = [
   { path: 'home', component: HomePageComponent },
@@ -20,6 +23,9 @@ const routes: Routes = [
   { path: 'auth/email/reset/:token', component: ResetPasswordPageComponent },
   { path: 'account/profile', component: ProfilePageComponent },
   { path: 'account/password', component: PasswordPageComponent },
+  { path: 'cart', component: CartPageComponent },
+  { path: 'checkout', component: CheckoutPageComponent },
+  { path: 'store', component: StorePageComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/error', pathMatch: 'full' }
 ];

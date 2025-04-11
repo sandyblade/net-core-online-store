@@ -25,6 +25,8 @@ import { ResetPasswordPageComponent } from './pages/reset-password-page/reset-pa
 import { StorePageComponent } from './pages/store-page/store-page.component';
 import { LottieComponent, provideLottieOptions } from 'ngx-lottie';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
+import { StarRatingModule } from 'angular-star-rating';
 import player from 'lottie-web';
 
 export function playerFactory() {
@@ -61,6 +63,8 @@ export function playerFactory() {
     AppRoutingModule,
     NgbModule,
     SlickCarouselModule,
+    NgxSliderModule,
+    StarRatingModule.forRoot(),
     LottieComponent
   ],
   providers: [

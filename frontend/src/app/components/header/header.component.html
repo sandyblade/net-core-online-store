@@ -54,7 +54,7 @@
         <div class="col-md-3 clearfix">
           <div class="header-ctn">
             <div class="position-relative">
-              <a href="#" class="text-center text-decoration-none fw-bold">
+              <a (click)="showModal($event, wishlist)" href="#" class="text-center text-decoration-none fw-bold">
                 <i class="bi bi-heart mb-2"></i>
                 <span class='d-block'>Your Wishlist</span>
               </a>
@@ -64,7 +64,7 @@
               </span>
             </div>
             <div class="position-relative">
-              <a href="#" class="text-center text-decoration-none fw-bold">
+              <a href="#" (click)="showModal($event, cart)" class="text-center text-decoration-none fw-bold">
                 <i class="bi bi-cart mb-2"></i>
                 <span class='d-block'>Your Cart</span>
               </a>
@@ -79,3 +79,93 @@
     </div>
   </div>
 </header>
+
+<ng-template #wishlist let-modal>
+  <div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">My Wishlist</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+	</div>
+  <div class="modal-body">
+    <div class="row mb-2">
+        <div class="col-md-4 text-center">
+            <img src="https://5an9y4lf0n50.github.io/demo-images/demo-commerce/product01.png" class='img-thumbnail img-responsive' width="100" alt=""/>
+        </div>
+        <div class="col-md-8">
+            <a href="#" class="text-decoration-none text-uppercase text-muted d-block">
+                <strong>product name goes here</strong>
+            </a>
+            <h5>$980.00</h5>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-md-4 text-center">
+            <img src="https://5an9y4lf0n50.github.io/demo-images/demo-commerce/product02.png" class='img-thumbnail img-responsive' width="100" alt=""/>
+        </div>
+        <div class="col-md-8">
+            <a href="#" class="text-decoration-none text-uppercase text-muted d-block">
+                <strong>product name goes here</strong>
+            </a>
+            <h5>$1960.00</h5>
+        </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #cart let-modal>
+  <div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">My Cart</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+	</div>
+  <div class="modal-body">
+    <div class="row mb-2">
+      <div class="col-md-4 text-center">
+          <img src="https://5an9y4lf0n50.github.io/demo-images/demo-commerce/product01.png" class='img-thumbnail img-responsive' width="100" alt=""/>
+      </div>
+      <div class="col-md-8">
+          <a href="#" class="text-decoration-none text-uppercase text-muted d-block">
+              <strong>product name goes here</strong>
+          </a>
+          <span class='d-block mb-2'>
+              1 x <strong>$980.00</strong>
+          </span>
+          <h5>$980.00</h5>
+      </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-md-4 text-center">
+            <img src="https://5an9y4lf0n50.github.io/demo-images/demo-commerce/product02.png" class='img-thumbnail img-responsive' width="100" alt=""/>
+        </div>
+        <div class="col-md-8">
+            <a href="#" class="text-decoration-none text-uppercase text-muted d-block">
+                <strong>product name goes here</strong>
+            </a>
+            <span class='d-block mb-2'>
+                2 x <strong>$980.00</strong>
+            </span>
+            <h5>$1960.00</h5>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-md-4 text-center">
+            <img src="https://5an9y4lf0n50.github.io/demo-images/demo-commerce/product03.png" class='img-thumbnail img-responsive' width="100" alt=""/>
+        </div>
+        <div class="col-md-8">
+            <a href="#" class="text-decoration-none text-uppercase text-muted d-block">
+                <strong>product name goes here</strong>
+            </a>
+            <span class='d-block mb-2'>
+                3 x <strong>$980.00</strong>
+            </span>
+            <h5>$2940.00</h5>
+        </div>
+    </div>
+    <div class="cart-summary">
+        <small>3 Item(s) selected</small>
+        <h5>SUBTOTAL: $5880.00</h5>
+    </div>
+    <div class="cart-btns">
+      <a href="#" (click)="redirectTo($event, '/cart')" class="text-decoration-none">View Cart <i class="bi bi-cart ms-1"></i></a>
+      <a href="#" (click)="redirectTo($event, '/checkout')" class="text-decoration-none">Checkout <i class="bi bi-arrow-right-circle ms-1"></i></a>
+    </div>
+  </div>
+</ng-template>
