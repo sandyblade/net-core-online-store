@@ -27,6 +27,9 @@ import { LottieComponent, provideLottieOptions } from 'ngx-lottie';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { StarRatingModule } from 'angular-star-rating';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import player from 'lottie-web';
 
 export function playerFactory() {
@@ -65,7 +68,10 @@ export function playerFactory() {
     SlickCarouselModule,
     NgxSliderModule,
     StarRatingModule.forRoot(),
-    LottieComponent
+    LottieComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [
     provideLottieOptions({

@@ -1,0 +1,15 @@
+{
+  "AppSettings": {
+    "Secret": "secret"
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Port=5432;Database=CSharpCornerDB;Username=yourusername;Password=yourpassword"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}

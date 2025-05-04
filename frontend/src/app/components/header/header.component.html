@@ -2,22 +2,36 @@
   <div id="top-header" class='p-0 bg-dark'>
     <div class="container py-2">
       <div class='clearfix'>
-        <ul class="header-links float-start p-0">
-          <li><a href="https://wa.me/628989218470"><i class="bi bi-telephone-outbound me-1 mb-1 text-primary"></i>
-              +62-898-921-8470</a></li>
-          <li><a href="#"><i class="bi bi-envelope me-1 mb-1 text-primary"></i>
-              sandy.andryanto.blade&#64;gmail.com</a></li>
-          <li><a href="#"><i class="bi bi-pin-map me-1 mb-1 text-primary"></i> West Java, Indonesia</a></li>
-        </ul>
-        <ul class="header-links float-end p-0 header-account">
-          <li><a href="#"><i class="bi bi-currency-dollar me-1 mb-1 text-primary"></i> USD</a></li>
-          <li><a [routerLink]="['/account/profile']"><i class="bi bi-person-plus me-1 mb-1 text-primary"></i> My
-              Account</a></li>
-          <li><a [routerLink]="['/auth/login']"><i class="bi bi-person-circle me-1 mb-1 text-primary"></i> Login</a>
-          </li>
-          <li><a [routerLink]="['/auth/register']"><i class="bi bi-person-fill-add me-1 mb-1 text-primary"></i>
-              Register</a></li>
-        </ul>
+        <ng-container *ngIf="logged else pattern">
+          <ul class="header-links float-start p-0">
+            <li *ngIf="logged"><a href="https://wa.me/628989218470"><i
+                  class="bi bi-telephone-outbound me-1 mb-1 text-primary"></i>
+                {{ user.phone ? user.phone : 'Your Phone' }}</a></li>
+            <li *ngIf="logged"><a href="#"><i class="bi bi-envelope me-1 mb-1 text-primary"></i>
+                {{ user.email ? user.email : 'Your Email' }}</a></li>
+            <li *ngIf="logged"><a href="#"><i class="bi bi-pin-map me-1 mb-1 text-primary"></i>{{ user.city ?
+                user.city : 'Your City' }}, {{ user.country ? user.country : 'Your Country' }}</a>
+            </li>
+          </ul>
+          <ul class="header-links float-end p-0 header-account">
+            <li><a href="#"><i class="bi bi-currency-dollar me-1 mb-1 text-primary"></i> USD</a></li>
+            <li><a [routerLink]="['/account/profile']"><i class="bi bi-person-plus me-1 mb-1 text-primary"></i> My
+                Account</a></li>
+            <li><a [routerLink]="['/account/profile']"><i class="bi bi-lock me-1 mb-1 text-primary"></i>
+                Change Password
+                Password</a></li>
+            <li><a href="#" (click)="logout($event)"><i class="fas fa-sign-out me-1 mb-1 text-primary"></i> Sign
+                Out</a></li>
+          </ul>
+        </ng-container>
+        <ng-template #pattern>
+          <ul class="header-links float-end p-0 header-account">
+            <li><a [routerLink]="['/auth/login']"><i class="bi bi-person-circle me-1 mb-1 text-primary"></i> Login</a>
+            </li>
+            <li><a [routerLink]="['/auth/register']"><i class="bi bi-person-fill-add me-1 mb-1 text-primary"></i>
+                Register</a></li>
+          </ul>
+        </ng-template>
       </div>
     </div>
   </div>
@@ -52,7 +66,7 @@
           </div>
         </div>
         <div class="col-md-3 clearfix">
-          <div class="header-ctn">
+          <div class="header-ctn" *ngIf="logged">
             <div class="position-relative">
               <a (click)="showModal($event, wishlist)" href="#" class="text-center text-decoration-none fw-bold">
                 <i class="bi bi-heart mb-2"></i>
@@ -82,90 +96,97 @@
 
 <ng-template #wishlist let-modal>
   <div class="modal-header">
-		<h4 class="modal-title" id="modal-basic-title">My Wishlist</h4>
-		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
-	</div>
+    <h4 class="modal-title" id="modal-basic-title">My Wishlist</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
   <div class="modal-body">
     <div class="row mb-2">
-        <div class="col-md-4 text-center">
-            <img src="https://5an9y4lf0n50.github.io/demo-images/demo-commerce/product01.png" class='img-thumbnail img-responsive' width="100" alt=""/>
-        </div>
-        <div class="col-md-8">
-            <a href="#" class="text-decoration-none text-uppercase text-muted d-block">
-                <strong>product name goes here</strong>
-            </a>
-            <h5>$980.00</h5>
-        </div>
+      <div class="col-md-4 text-center">
+        <img src="https://5an9y4lf0n50.github.io/demo-images/demo-commerce/product01.png"
+          class='img-thumbnail img-responsive' width="100" alt="" />
+      </div>
+      <div class="col-md-8">
+        <a href="#" class="text-decoration-none text-uppercase text-muted d-block">
+          <strong>product name goes here</strong>
+        </a>
+        <h5>$980.00</h5>
+      </div>
     </div>
     <div class="row mb-2">
-        <div class="col-md-4 text-center">
-            <img src="https://5an9y4lf0n50.github.io/demo-images/demo-commerce/product02.png" class='img-thumbnail img-responsive' width="100" alt=""/>
-        </div>
-        <div class="col-md-8">
-            <a href="#" class="text-decoration-none text-uppercase text-muted d-block">
-                <strong>product name goes here</strong>
-            </a>
-            <h5>$1960.00</h5>
-        </div>
+      <div class="col-md-4 text-center">
+        <img src="https://5an9y4lf0n50.github.io/demo-images/demo-commerce/product02.png"
+          class='img-thumbnail img-responsive' width="100" alt="" />
+      </div>
+      <div class="col-md-8">
+        <a href="#" class="text-decoration-none text-uppercase text-muted d-block">
+          <strong>product name goes here</strong>
+        </a>
+        <h5>$1960.00</h5>
+      </div>
     </div>
   </div>
 </ng-template>
 
 <ng-template #cart let-modal>
   <div class="modal-header">
-		<h4 class="modal-title" id="modal-basic-title">My Cart</h4>
-		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
-	</div>
+    <h4 class="modal-title" id="modal-basic-title">My Cart</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
   <div class="modal-body">
     <div class="row mb-2">
       <div class="col-md-4 text-center">
-          <img src="https://5an9y4lf0n50.github.io/demo-images/demo-commerce/product01.png" class='img-thumbnail img-responsive' width="100" alt=""/>
+        <img src="https://5an9y4lf0n50.github.io/demo-images/demo-commerce/product01.png"
+          class='img-thumbnail img-responsive' width="100" alt="" />
       </div>
       <div class="col-md-8">
-          <a href="#" class="text-decoration-none text-uppercase text-muted d-block">
-              <strong>product name goes here</strong>
-          </a>
-          <span class='d-block mb-2'>
-              1 x <strong>$980.00</strong>
-          </span>
-          <h5>$980.00</h5>
+        <a href="#" class="text-decoration-none text-uppercase text-muted d-block">
+          <strong>product name goes here</strong>
+        </a>
+        <span class='d-block mb-2'>
+          1 x <strong>$980.00</strong>
+        </span>
+        <h5>$980.00</h5>
       </div>
     </div>
     <div class="row mb-2">
-        <div class="col-md-4 text-center">
-            <img src="https://5an9y4lf0n50.github.io/demo-images/demo-commerce/product02.png" class='img-thumbnail img-responsive' width="100" alt=""/>
-        </div>
-        <div class="col-md-8">
-            <a href="#" class="text-decoration-none text-uppercase text-muted d-block">
-                <strong>product name goes here</strong>
-            </a>
-            <span class='d-block mb-2'>
-                2 x <strong>$980.00</strong>
-            </span>
-            <h5>$1960.00</h5>
-        </div>
+      <div class="col-md-4 text-center">
+        <img src="https://5an9y4lf0n50.github.io/demo-images/demo-commerce/product02.png"
+          class='img-thumbnail img-responsive' width="100" alt="" />
+      </div>
+      <div class="col-md-8">
+        <a href="#" class="text-decoration-none text-uppercase text-muted d-block">
+          <strong>product name goes here</strong>
+        </a>
+        <span class='d-block mb-2'>
+          2 x <strong>$980.00</strong>
+        </span>
+        <h5>$1960.00</h5>
+      </div>
     </div>
     <div class="row mb-2">
-        <div class="col-md-4 text-center">
-            <img src="https://5an9y4lf0n50.github.io/demo-images/demo-commerce/product03.png" class='img-thumbnail img-responsive' width="100" alt=""/>
-        </div>
-        <div class="col-md-8">
-            <a href="#" class="text-decoration-none text-uppercase text-muted d-block">
-                <strong>product name goes here</strong>
-            </a>
-            <span class='d-block mb-2'>
-                3 x <strong>$980.00</strong>
-            </span>
-            <h5>$2940.00</h5>
-        </div>
+      <div class="col-md-4 text-center">
+        <img src="https://5an9y4lf0n50.github.io/demo-images/demo-commerce/product03.png"
+          class='img-thumbnail img-responsive' width="100" alt="" />
+      </div>
+      <div class="col-md-8">
+        <a href="#" class="text-decoration-none text-uppercase text-muted d-block">
+          <strong>product name goes here</strong>
+        </a>
+        <span class='d-block mb-2'>
+          3 x <strong>$980.00</strong>
+        </span>
+        <h5>$2940.00</h5>
+      </div>
     </div>
     <div class="cart-summary">
-        <small>3 Item(s) selected</small>
-        <h5>SUBTOTAL: $5880.00</h5>
+      <small>3 Item(s) selected</small>
+      <h5>SUBTOTAL: $5880.00</h5>
     </div>
     <div class="cart-btns">
-      <a href="#" (click)="redirectTo($event, '/cart')" class="text-decoration-none">View Cart <i class="bi bi-cart ms-1"></i></a>
-      <a href="#" (click)="redirectTo($event, '/checkout')" class="text-decoration-none">Checkout <i class="bi bi-arrow-right-circle ms-1"></i></a>
+      <a href="#" (click)="redirectTo($event, '/cart')" class="text-decoration-none">View Cart <i
+          class="bi bi-cart ms-1"></i></a>
+      <a href="#" (click)="redirectTo($event, '/checkout')" class="text-decoration-none">Checkout <i
+          class="bi bi-arrow-right-circle ms-1"></i></a>
     </div>
   </div>
 </ng-template>

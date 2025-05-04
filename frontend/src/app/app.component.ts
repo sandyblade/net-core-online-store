@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, OnInit, Renderer2, HostListener } from '@angular/core';
 import { AnimationOptions } from 'ngx-lottie';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -19,15 +20,25 @@ export class AppComponent implements OnInit {
 
   animationOption: AnimationOptions = { path: '/animations/loader.json' };
 
-  constructor(@Inject(DOCUMENT) document: any, private render: Renderer2) {
+  constructor(@Inject(DOCUMENT) document: any, private render: Renderer2, private authService: AuthService) {
     this.document = document
   }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.loading = false
-      this.connected = true
-    }, 3000)
+    this.authService.ping()
+      .subscribe({
+        next: () => {
+          setTimeout(() => {
+            this.loading = false
+            this.connected = true
+          }, 3000)
+        },
+        error: (e) => {
+          console.error(e)
+          this.loading = false
+          this.connected = false
+        }
+      });
   }
 
   clickToTop(event: any) {

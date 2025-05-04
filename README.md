@@ -97,7 +97,7 @@ dotnet restore
 
 #### 3. Customize settings in appsettings.json
 ```shell
-"MainContext": "Host=localhost;Database=db_name;Username=db_username;Password=db_password"
+"DefaultConnection": "Host=localhost;Port=5432;Database=yourdatabase;Username=yourusername;Password=yourpassword"
 ```
 
 #### 4. Start PostgreSQL Service , Seed data and Running REST API
@@ -126,7 +126,7 @@ export const environment = {
 #### 7. Run Application 
 ```shell
 cd frontend
-npm start
+npm run start:dev
 ```
 
 #### 8. Access application by entering [https://localhost:4200](https://localhost:4200) in the browser.
