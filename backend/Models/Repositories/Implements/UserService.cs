@@ -12,9 +12,11 @@
 using backend.Models.DTO;
 using backend.Models.Entities;
 using backend.Models.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq.Dynamic.Core.Tokenizer;
 using System.Security.Claims;
 using System.Text;
 
@@ -77,27 +79,32 @@ namespace backend.Models.Repositories.Implements
 
         public User GetById(long Id)
         {
-            return _db.User.Where(x => x.Id == Id).FirstOrDefault();
+            return _db.User.Where(x => x.Id == Id).OrderByDescending(x => x.Id).FirstOrDefault();
         }
 
         public User GetByEmail(String Email, long Id)
         {
-            return _db.User.Where(x => x.Email == Email && x.Id != Id).FirstOrDefault();
+            return _db.User.Where(x => x.Email == Email && x.Id != Id).OrderByDescending(x => x.Id).FirstOrDefault();
         }
 
         public User GetByPhone(String Phone, long Id)
         {
-            return _db.User.Where(x => x.Phone == Phone && x.Id != Id).FirstOrDefault();
+            return _db.User.Where(x => x.Phone == Phone && x.Id != Id).OrderByDescending(x => x.Id).FirstOrDefault();
+        }
+
+        public Authentication GetByCredential(String Crendetial, String Type)
+        {
+            return _db.Authentication.Where(x => x.Type == Type && x.Credential == Crendetial && x.Status == 0).OrderByDescending(x => x.Id).FirstOrDefault();
         }
 
         public Authentication GetByConfirmToken(String Token)
         {
-            return _db.Authentication.Where(x => x.Type == "email" && x.Token == Token && x.Status == 0).FirstOrDefault();
+            return _db.Authentication.Where(x => x.Type == "email" && x.Token == Token && x.Status == 0).OrderByDescending(x => x.Id).FirstOrDefault();
         }
 
         public Authentication GetByResetToken(String Token, String Email)
         {
-            return _db.Authentication.Where(x => x.Type == "password" && x.Token == Token && x.Status == 0).FirstOrDefault();
+            return _db.Authentication.Where(x => x.Type == "password" && x.Token == Token && x.Status == 0).OrderByDescending(x => x.Id).FirstOrDefault();
         }
 
         public UserAuthDTO Authenticate(UserLoginDTO model)
@@ -120,7 +127,7 @@ namespace backend.Models.Repositories.Implements
 
             if(user != null)
             {
-                _activityRepository.SaveActivity(user, "Sign In", "Sign in to application");
+                _activityRepository.SaveActivity(user, "Sign In", "Sign In To Application", "Your has been logged in an application.");
             }
 
             return new UserAuthDTO(user, token);
@@ -128,7 +135,25 @@ namespace backend.Models.Repositories.Implements
 
         public User Register(UserRegisterDTO model)
         {
-            User NewUser = new User() { Email = model.Email, Password = BCrypt.Net.BCrypt.HashPassword(model.Password) };
+
+            String FullName = model.Name;
+            string[] Names = FullName.Split(" ");
+            String FirstName = Names.FirstOrDefault();
+            String LastName = null;
+
+            if (Names.Length > 1)
+            {
+                LastName = String.Join(" ", Names.Skip(1));
+            }
+            
+
+            User NewUser = new User()
+            {
+                FirstName = FirstName,
+                LastName = LastName,
+                Email = model.Email,
+                Password = BCrypt.Net.BCrypt.HashPassword(model.Password)
+            };
 
             // return null if user not found
             if (NewUser == null)
@@ -142,7 +167,16 @@ namespace backend.Models.Repositories.Implements
 
             if (NewUser != null)
             {
-                _activityRepository.SaveActivity(NewUser, "Sign Up", "Register new user account");
+                Authentication at = new Authentication() { User = NewUser };
+                at.Type = "email";
+                at.Status = 0;
+                at.Credential = model.Email;
+                at.ExpiredAt = DateTime.UtcNow.AddMinutes(30);
+                at.Token = System.Guid.NewGuid().ToString();
+                _db.Add(at);
+                _db.SaveChanges();
+
+                _activityRepository.SaveActivity(NewUser, "Sign Up", "Sign Up To Application", "Your has been registered in an application.");
             }
 
             return NewUser;
@@ -162,13 +196,14 @@ namespace backend.Models.Repositories.Implements
             {
 
                 Authentication at = new Authentication() { User = User };
+                at.Type = "password";
                 at.Status = 0;
                 at.Credential = model.Email;
                 at.ExpiredAt = DateTime.UtcNow.AddMinutes(30);
                 at.Token = System.Guid.NewGuid().ToString();
                 _db.Add(at);
                 _db.SaveChanges();
-                _activityRepository.SaveActivity(User, "Forgot Password", "Request reset password link");
+                _activityRepository.SaveActivity(User, "Reset Password", "Send Request Reset Password", "Your has been sent a request reset password.");
             }
 
             return User;
@@ -176,58 +211,62 @@ namespace backend.Models.Repositories.Implements
 
         public User ResetPassword(String Token, UserResetPasswordDTO model)
         {
-            Authentication at = GetByResetToken(Token, model.Email);
+            User User = GetByEmail(model.Email, 0);
 
             // return null if user not found
+            if (User == null)
+            {
+                return null;
+            }
+
+            User.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
+            User.Status = 1;
+           
+            Authentication at = _db.Authentication.Where(x => x.Token == Token).FirstOrDefault();
+
             if (at == null)
             {
                 return null;
             }
 
-            if(at.ExpiredAt > DateTime.UtcNow)
-            {
-                return null;
-            }
-
-            User User = at.User;
-
-            at.Status = 1;
+            at.Status = 2;
             at.ExpiredAt = DateTime.UtcNow;
+
+            _db.Update(User);
             _db.Update(at);
             _db.SaveChanges();
-
-            if (User != null)
-            {
-                _activityRepository.SaveActivity(User, "Reset Password", "Reset account password");
-            }
+            _activityRepository.SaveActivity(User, "Reset Password", "Update Current Password", "Your has been changed a current password.");
 
             return User;
         }
 
         public User Confirmation(String Token)
         {
-            Authentication at = GetByConfirmToken(Token);
+        
+            Authentication at = _db.Authentication.Where(x => x.Token == Token).FirstOrDefault();
 
-            // return null if user not found
             if (at == null)
             {
                 return null;
             }
 
-            User User = at.User;
-            User.Status = 1;
-            _db.Update(User);
+            User User = GetByEmail(at.Credential, 0);
 
-            at.Status = 1;
-            at.ExpiredAt = DateTime.UtcNow;
-            _db.Update(at);
-
-            _db.SaveChanges();
-
-            if (User != null)
+            // return null if user not found
+            if (User == null)
             {
-                _activityRepository.SaveActivity(User, "Email Verification", "Confirm new member registration account");
+                return null;
             }
+
+            User.Status = 1;
+
+            at.Status = 2;
+            at.ExpiredAt = DateTime.UtcNow;
+
+            _db.Update(User);
+            _db.Update(at);
+            _db.SaveChanges();
+            _activityRepository.SaveActivity(User, "Confirmation", "E-mail Confirmation", "Your has been confirmed a registration account.");
 
             return User;
         }
@@ -240,7 +279,7 @@ namespace backend.Models.Repositories.Implements
 
             if (user != null)
             {
-                _activityRepository.SaveActivity(user, "Change Password", "Change new password account");
+                _activityRepository.SaveActivity(user, "Change Password", "Update Current User Password", "Your has been updated current password.");
             }
 
             return user;
@@ -262,7 +301,7 @@ namespace backend.Models.Repositories.Implements
 
             if (user != null)
             {
-                _activityRepository.SaveActivity(user, "Update Profile", "Edit user profile account");
+                _activityRepository.SaveActivity(user, "Update Profile", "Update Current User Profile", "Your has been updated current user profile.");
             }
 
             return user;
@@ -277,7 +316,7 @@ namespace backend.Models.Repositories.Implements
 
             if (user != null)
             {
-                _activityRepository.SaveActivity(user, "Upload Image", "Upload new user profile image");
+                _activityRepository.SaveActivity(user, "Change Profile Image", "Update Current Profile Image", "Your has been updated current profile image.");
             }
         }
 

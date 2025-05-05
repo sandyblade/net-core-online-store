@@ -36,6 +36,10 @@ namespace backend.Models.Entities
         public required string Event { get; set; }
 
         [Required]
+        [Column(TypeName = "varchar(255)")]
+        public required string Subject { get; set; }
+
+        [Required]
         [Column(TypeName = "text")]
         public required string Description { get; set; }
 

@@ -32,7 +32,7 @@ export class LoginPageComponent implements OnInit {
 
     this.formGroup = this.formBuilder.group({
       email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+      password: new FormControl('', [Validators.required, Validators.minLength(8)]),
       remember: new FormControl(''),
     });
 
@@ -81,7 +81,6 @@ export class LoginPageComponent implements OnInit {
       this.formGroup.get('email')?.markAsTouched({ onlySelf: true })
       this.formGroup.get('password')?.markAsTouched({ onlySelf: true })
     }
-
   }
 
   onClear() {

@@ -66,7 +66,10 @@ namespace backend.Controllers
 
             _userRepository.Register(model);
 
-            return Ok(new {  message = "You need to confirm your account. We have sent you an activation code, please check your email.!" });
+            Authentication Authentication = _userRepository.GetByCredential(model.Email, "email");
+            String Token = Authentication == null ? "undefined" : Authentication.Token;
+
+            return Ok(new {  message = "You need to confirm your account. We have sent you an activation code, please check your email.!", token = Token });
 
         }
 
@@ -96,14 +99,24 @@ namespace backend.Controllers
             }
 
             _userRepository.ForgotPassword(model);
+            Authentication Authentication = _userRepository.GetByCredential(model.Email, "password");
+            String Token = Authentication == null ? "undefined" : Authentication.Token;
 
-            return Ok(new { message = "We have e-mailed your password reset link!" });
+            return Ok(new { message = "We have e-mailed your password reset link!", token = Token });
 
         }
 
         [HttpPost("email/reset/{token}")]
         public IActionResult Reset(String token, UserResetPasswordDTO model)
         {
+
+            User user = _userRepository.GetByEmail(model.Email, 0);
+
+            if (user == null)
+            {
+                return BadRequest(new { message = "We can't find a user with that e-mail address.!" });
+            }
+
             Authentication at = _userRepository.GetByResetToken(token, model.Email);
 
             if (at == null)

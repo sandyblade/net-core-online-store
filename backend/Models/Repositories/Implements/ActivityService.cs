@@ -26,26 +26,17 @@ namespace backend.Models.Repositories.Implements
             _db = db;
         }
 
-        public Activity SaveActivity(User User, String Event, String Description)
+        public Activity SaveActivity(User User, String Event, String Subject, String Description)
         {
-            Activity NewActivity = new Activity() { User = User, Event = Event, Description = Description };
+            Activity NewActivity = new Activity() { User = User, Event = Event, Subject = Subject, Description = Description };
             _db.Add(NewActivity);
             _db.SaveChanges();
             return NewActivity;
         }
 
-        public List<Activity> GetByUser(User user, FilterDTO filter)
+        public List<Activity> GetByUser(User user)
         {
-            var attr = typeof(Activity).GetProperty(filter.OrderBy);
-            var data = _db.Activity.AsQueryable();
-            data = data.Where(x => x.User == user);
-
-            if (!String.IsNullOrWhiteSpace(filter.Search))
-            {
-                data = data.Where(x => x.Event.Contains(filter.Search) || x.Description.Contains(filter.Search));
-            }
-
-            return data.OrderBy(filter.OrderBy + " " + filter.OrderDir).Skip(filter.Offset).Take(filter.Limit).ToList();
+            return _db.Activity.Where(x => x.User == user).OrderByDescending(x => x.Id).ToList();
         }
 
     }

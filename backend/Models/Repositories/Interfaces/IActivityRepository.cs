@@ -16,8 +16,8 @@ namespace backend.Models.Repositories.Interfaces
 {
     public interface IActivityRepository
     {
-        Activity SaveActivity(User User, String Event, String Description);
+        Activity SaveActivity(User User, String Event, String Subject, String Description);
 
-        List<Activity> GetByUser(User user, FilterDTO filter);
+        List<Activity> GetByUser(User user);
     }
 }

@@ -46,6 +46,7 @@ namespace backend.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     Event = table.Column<string>(type: "varchar(255)", nullable: false),
+                    Subject = table.Column<string>(type: "varchar(255)", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<short>(type: "smallint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),

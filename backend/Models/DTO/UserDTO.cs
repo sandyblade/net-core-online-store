@@ -28,6 +28,10 @@ namespace backend.Models.DTO
     public class UserRegisterDTO
     {
         [Required]
+        [StringLength(255, MinimumLength = 3)]
+        public required string Name { get; set; }
+
+        [Required]
         [EmailAddress]
         public required string Email { get; set; }
 

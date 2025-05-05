@@ -31,6 +31,7 @@ namespace backend.Models.Repositories.Interfaces
         User ChangeProfile(User user, UserChangeProfileDTO model);
         void ChangeImage(User user, String Path);
         String generateJwtToken(User user);
+        Authentication GetByCredential(String Crendetial, String Type);
 
     }
 }

@@ -135,16 +135,10 @@ namespace backend.Controllers
         }
 
         [HttpGet("activity")]
-        public IActionResult Activity(int page = 1, int limit = 10, String orderBy = "Id", String OrderDir = "desc", String? Search = null)
+        public IActionResult Activity()
         {
-            FilterDTO filter = new FilterDTO();
-            filter.Page = page;
-            filter.Limit = limit;
-            filter.OrderBy = orderBy;
-            filter.OrderDir = OrderDir;
-            filter.Search = Search;
             var user = (User)this.HttpContext.Items["User"];
-            var list = _activityRepository.GetByUser(user, filter)
+            var list = _activityRepository.GetByUser(user)
                 .Select(x => new UserActivityDTO() { 
                     Event =x.Event,
                     Description = x.Description,
