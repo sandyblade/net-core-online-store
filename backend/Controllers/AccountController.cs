@@ -14,6 +14,7 @@ using backend.Models.Entities;
 using backend.Models.Repositories.Interfaces;
 using backend.Configs;
 using backend.Models.DTO;
+using System.Collections.Generic;
 
 
 namespace backend.Controllers
@@ -35,8 +36,10 @@ namespace backend.Controllers
         [HttpGet("detail")]
         public IActionResult Detail()
         {
-            var user = (User)this.HttpContext.Items["User"];
-            return Ok(new { status = true, data = user, message = "ok" });
+            var session = (User)this.HttpContext.Items["User"];
+            User user = _userRepository.GetById(session.Id);
+            List<Activity> activities = _activityRepository.GetByUser(user);
+            return Ok(new { user = user, activities = activities });
         }
 
         [HttpPost("update")]

@@ -29,11 +29,20 @@ export class ProfileService {
     return this.http.post(`${this.baseUrl}/api/account/password`, data, { headers: new HttpHeaders(this.headers) });
   }
 
-  upload(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/api/account/upload`, data, { headers: new HttpHeaders(this.headers) });
+  upload(image: File): Observable<any> {
+    const uploadHeader = new Headers({
+      'Authorization': `Bearer ${this.authToken}`
+    })
+    const formData = new FormData();
+    formData.append('file', image);
+    return this.http.post(`${this.baseUrl}/api/account/upload`, formData, { headers: new HttpHeaders(uploadHeader) });
   }
 
   activity(): Observable<any> {
     return this.http.get(`${this.baseUrl}/api/account/activity`, { headers: new HttpHeaders(this.headers) })
+  }
+
+  getImage(image: string) {
+    return `${this.baseUrl}/Uploads/${image}`
   }
 }

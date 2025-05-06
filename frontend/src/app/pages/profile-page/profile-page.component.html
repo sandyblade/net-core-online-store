@@ -15,60 +15,224 @@
 </main>
 <main class="flex-shrink-0 mb-5">
   <div class="container">
+    <div *ngIf="errorResponse" class="alert alert-danger">
+      <small>{{errorResponse}}</small>
+    </div>
+    <div *ngIf="successResponse" class="alert alert-success">
+      <small>{{successResponse}}</small>
+    </div>
     <div class="row">
-      <div class="col-md-6">
-        <form>
-          <h3 class='text-uppercase mb-3 text-center'>Account Profile</h3>
-          <div class="mb-3">
-            <i class="bi-person-circle d-block mb-3 image-user-font"></i>
-            <label class="form-label">Image Profile </label>
-            <input type="file" class="form-control">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">First Name <span class="text-danger">*</span></label>
-            <input placeholder="Enter Your First Name" type="text" class="form-control" value="">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Last Name <span class="text-danger">*</span></label>
-            <input placeholder="Enter Your Last Name" type="text" class="form-control" value="">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">E-Mail Address <span class="text-danger">*</span></label>
-            <input placeholder="Enter Your E-Mail Address" type="email" class="form-control" value="">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Phone Number <span class="text-danger">*</span></label>
-            <input placeholder="Enter Your Phone Number" type="tel" class="form-control" value="">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">City <span class="text-danger">*</span></label>
-            <input placeholder="Enter Your City" type="text" class="form-control" value="">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Country <span class="text-danger">*</span></label>
-            <input placeholder="Enter Your Country" type="text" class="form-control" value="">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Zip Code <span class="text-danger">*</span></label>
-            <input placeholder="Enter Your Zip Code" type="text" class="form-control" value="">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Street Address <span class="text-danger">*</span></label>
-            <textarea rows="3" placeholder='Enter Your Street Address' class="form-control"></textarea>
-          </div>
-          <button type='submit' class="btn btn-lg btn-primary me-2">
-            Update Profile
-          </button>
-          <button type='reset' class="btn btn-lg btn-danger">
-            Reset Form
-          </button>
-        </form>
-      </div>
+      <ng-container *ngIf="loading else pattern">
+        <div class="col-md-6">
+          <form>
+            <h3 class='text-uppercase mb-3 text-center'>Account Profile</h3>
+            <div class="mb-3">
+              <div class="shimmer-photo shimmer-shine mb-2 mt-2"></div>
+              <label class="form-label">Image Profile </label>
+              <div class="shimmer-lines-field shimmer-shine w-100"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">First Name <span class="text-danger">*</span></label>
+              <div class="shimmer-lines-field shimmer-shine w-100">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Last Name <span class="text-danger">*</span></label>
+              <div class="shimmer-lines-field shimmer-shine w-100"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">E-Mail Address <span class="text-danger">*</span></label>
+              <div class="shimmer-lines-field shimmer-shine w-100"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+              <div class="shimmer-lines-field shimmer-shine w-100"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">City <span class="text-danger">*</span></label>
+              <div class="shimmer-lines-field shimmer-shine w-100"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Country <span class="text-danger">*</span></label>
+              <div class="shimmer-lines-field shimmer-shine w-100"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Zip Code <span class="text-danger">*</span></label>
+              <div class="shimmer-lines-field shimmer-shine w-100"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Street Address <span class="text-danger">*</span></label>
+              <div class="shimmer-lines-field-address shimmer-shine w-100"></div>
+            </div>
+          </form>
+        </div>
+      </ng-container>
+      <ng-template #pattern>
+        <div class="col-md-6">
+          <form novalidate [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+            <h3 class='text-uppercase mb-3 text-center'>Account Profile</h3>
+            <div class="mb-3">
+              <ng-container *ngIf="upload else afterUpload">
+                <div class="shimmer-photo shimmer-shine mb-2 mt-2"></div>
+              </ng-container>
+              <ng-template #afterUpload>
+                <ng-container *ngIf="image else noImage">
+                  <img class="image img-thumbnail mb-2 d-block" width="200" [src]="image" />
+                </ng-container>
+                <ng-template #noImage>
+                  <i class="bi-person-circle d-block mb-3 image-user-font"></i>
+                </ng-template>
+              </ng-template>
+              <label class="form-label">Image Profile </label>
+              <input type="file" #imageInput accept="image/*" (change)="processFile(imageInput)" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">First Name <span class="text-danger">*</span></label>
+              <input placeholder="Enter Your First Name" type="text" class="form-control" name="firstName"
+                formControlName="firstName"
+                [class.is-invalid]="formGroup.controls?.['firstName']?.invalid && formGroup.controls?.['firstName']?.touched"
+                required />
+              <div class="invalid-feedback"
+                *ngIf="formGroup.controls?.['firstName']?.invalid && formGroup.controls?.['firstName']?.touched">
+                <small *ngIf="formGroup.controls?.['firstName']?.errors?.['required']">
+                  Please Enter First Name
+                </small>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Last Name <span class="text-danger">*</span></label>
+              <input placeholder="Enter Your Last Name" type="text" class="form-control" name="lastName"
+                formControlName="lastName"
+                [class.is-invalid]="formGroup.controls?.['lastName']?.invalid && formGroup.controls?.['lastName']?.touched"
+                required />
+              <div class="invalid-feedback"
+                *ngIf="formGroup.controls?.['lastName']?.invalid && formGroup.controls?.['lastName']?.touched">
+                <small *ngIf="formGroup.controls?.['lastName']?.errors?.['required']">
+                  Please Enter First Name
+                </small>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Gender <span class="text-danger">*</span></label>
+              <select class="form-control" name="gender" formControlName="gender"
+                [class.is-invalid]="formGroup.controls?.['gender']?.invalid && formGroup.controls?.['gender']?.touched"
+                required>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+              </select>
+              <div class="invalid-feedback"
+                *ngIf="formGroup.controls?.['gender']?.invalid && formGroup.controls?.['gender']?.touched">
+                <small *ngIf="formGroup.controls?.['gender']?.errors?.['required']">
+                  Please Enter Gender
+                </small>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">E-Mail Address <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" id="email" placeholder="Enter Your E-Mail Address"
+                formControlName="email"
+                [class.is-invalid]="formGroup.controls?.['email']?.invalid && formGroup.controls?.['email']?.touched"
+                required />
+              <div class="invalid-feedback"
+                *ngIf="formGroup.controls?.['email']?.invalid && formGroup.controls?.['email']?.touched">
+                <ng-container *ngIf="formGroup.controls?.['email']?.errors?.['required']; else pattern">
+                  <small>Please Enter Email</small>
+                </ng-container>
+                <ng-template #pattern>
+                  <small>Please Enter Valid Email</small>
+                </ng-template>
+              </div>
+
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+              <input placeholder="Enter Your Phone Number" type="text" class="form-control" name="phone"
+                formControlName="phone"
+                [class.is-invalid]="formGroup.controls?.['phone']?.invalid && formGroup.controls?.['phone']?.touched"
+                required />
+              <div class="invalid-feedback"
+                *ngIf="formGroup.controls?.['phone']?.invalid && formGroup.controls?.['phone']?.touched">
+                <small *ngIf="formGroup.controls?.['phone']?.errors?.['required']">
+                  Please Enter First Name
+                </small>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">City <span class="text-danger">*</span></label>
+              <input placeholder="Enter Your City" type="text" class="form-control" name="city" formControlName="city"
+                [class.is-invalid]="formGroup.controls?.['city']?.invalid && formGroup.controls?.['city']?.touched"
+                required />
+              <div class="invalid-feedback"
+                *ngIf="formGroup.controls?.['city']?.invalid && formGroup.controls?.['city']?.touched">
+                <small *ngIf="formGroup.controls?.['city']?.errors?.['required']">
+                  Please Enter City
+                </small>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Country <span class="text-danger">*</span></label>
+              <input placeholder="Enter Your Country" type="text" class="form-control" name="country"
+                formControlName="country"
+                [class.is-invalid]="formGroup.controls?.['country']?.invalid && formGroup.controls?.['country']?.touched"
+                required />
+              <div class="invalid-feedback"
+                *ngIf="formGroup.controls?.['country']?.invalid && formGroup.controls?.['country']?.touched">
+                <small *ngIf="formGroup.controls?.['country']?.errors?.['required']">
+                  Please Enter Country
+                </small>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Zip Code <span class="text-danger">*</span></label>
+              <input placeholder="Enter Your Zip Code" type="text" class="form-control" name="zipCode"
+                formControlName="zipCode"
+                [class.is-invalid]="formGroup.controls?.['zipCode']?.invalid && formGroup.controls?.['zipCode']?.touched"
+                required />
+              <div class="invalid-feedback"
+                *ngIf="formGroup.controls?.['zipCode']?.invalid && formGroup.controls?.['zipCode']?.touched">
+                <small *ngIf="formGroup.controls?.['zipCode']?.errors?.['required']">
+                  Please Enter Zip Code
+                </small>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Street Address <span class="text-danger">*</span></label>
+              <textarea rows="3" placeholder='Enter Your Street Address' name="address"
+                [class.is-invalid]="formGroup.controls?.['address']?.invalid && formGroup.controls?.['address']?.touched"
+                formControlName="address" class="form-control" required></textarea>
+              <div class="invalid-feedback"
+                *ngIf="formGroup.controls?.['address']?.invalid && formGroup.controls?.['address']?.touched">
+                <small *ngIf="formGroup.controls?.['address']?.errors?.['required']">
+                  Please Enter Street Address
+                </small>
+              </div>
+            </div>
+            <button type='submit' class="btn btn-lg btn-primary me-2" [class]="submit ? 'disabled' : ''">
+              <i [class]="submit ? 'fas fa-circle-notch fa-spin me-2' : 'd-none'"></i>Update Profile
+            </button>
+            <button type='reset' class="btn btn-lg btn-danger" [class]="submit ? 'disabled' : ''">
+              Reset Form
+            </button>
+          </form>
+        </div>
+      </ng-template>
+
+
       <div class="col-md-6">
         <h3 class='text-uppercase mb-3 text-center'>Your Activity</h3>
-        <div class="p-1">
-          <app-timeline></app-timeline>
-        </div>
+        <ng-container *ngIf="loading; else pattern2">
+          <div class="shimmer-lines shimmer-shine w-100 mb-1"></div>
+          <div class="shimmer-lines shimmer-shine w-100 mb-1"></div>
+          <div class="shimmer-lines shimmer-shine w-100 mb-1"></div>
+          <div class="shimmer-lines shimmer-shine w-100 mb-1"></div>
+          <div class="shimmer-lines shimmer-shine w-100 mb-1"></div>
+          <div class="shimmer-lines shimmer-shine w-100 mb-1"></div>
+        </ng-container>
+        <ng-template #pattern2>
+          <div class="p-1">
+            <app-timeline [rows]="activities"></app-timeline>
+          </div>
+        </ng-template>
       </div>
     </div>
   </div>
